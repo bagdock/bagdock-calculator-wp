@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build plugin zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install prod dependencies
+        run: composer install --no-dev --prefer-dist --no-progress
+
+      - name: Build plugin zip
+        run: |
+          PLUGIN_SLUG=bagdock-calculator
+          STAGING_DIR="${RUNNER_TEMP}/${PLUGIN_SLUG}"
+          rm -rf "${STAGING_DIR}"
+          mkdir -p "${STAGING_DIR}"
+
+          # Copy only what ships to the WordPress.org SVN repo.
+          cp -R \
+            bagdock-calculator.php \
+            uninstall.php \
+            readme.txt \
+            LICENSE \
+            includes \
+            blocks \
+            assets \
+            languages \
+            "${STAGING_DIR}/" 2>/dev/null || true
+
+          ( cd "${RUNNER_TEMP}" && zip -r "${GITHUB_WORKSPACE}/${PLUGIN_SLUG}.zip" "${PLUGIN_SLUG}" )
+
+      - name: Attach zip to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: bagdock-calculator.zip
+
+  deploy-wordpress-org:
+    name: Deploy to WordPress.org
+    runs-on: ubuntu-latest
+    needs: build
+    # Skip the SVN deploy unless the repo has configured the credentials.
+    # This lets the first release ship a GitHub zip while the WordPress.org
+    # submission is still under review.
+    if: ${{ vars.WPORG_ENABLED == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to WordPress.org
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+          SLUG: bagdock-calculator

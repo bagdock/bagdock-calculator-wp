@@ -1,0 +1,26 @@
+{
+  "name": "bagdock/bagdock-calculator-wp",
+  "description": "The official Bagdock Calculator WordPress plugin — embed the Bagdock storage size calculator anywhere on your WordPress site.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://github.com/bagdock/bagdock-calculator-wp",
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "wp-coding-standards/wpcs": "^3.0",
+    "squizlabs/php_codesniffer": "^3.9",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "lint": "phpcs --standard=phpcs.xml.dist",
+    "lint:fix": "phpcbf --standard=phpcs.xml.dist"
+  }
+}

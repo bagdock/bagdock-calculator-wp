@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "bagdock/calculator",
+  "title": "Bagdock Calculator",
+  "category": "widgets",
+  "icon": "calculator",
+  "description": "Embed the Bagdock storage size calculator. Works with your operator embed key and optional facility override.",
+  "keywords": ["bagdock", "calculator", "storage", "self-storage", "size"],
+  "version": "0.1.0",
+  "textdomain": "bagdock-calculator",
+  "supports": {
+    "align": ["wide", "full"],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "mode": { "type": "string", "default": "button", "enum": ["button", "inline"] },
+    "buttonLabel": { "type": "string", "default": "" },
+    "embedKey": { "type": "string", "default": "" },
+    "facilityId": { "type": "string", "default": "" },
+    "storefrontUrl": { "type": "string", "default": "" },
+    "region": { "type": "string", "default": "" },
+    "preset": { "type": "string", "default": "" },
+    "className": { "type": "string", "default": "" }
+  },
+  "editorScript": "file:./index.js"
+}
